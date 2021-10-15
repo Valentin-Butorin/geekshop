@@ -14,10 +14,10 @@
                     <p>
                         Новые образы и лучшие бренды на GeekShop Store.
                         Бесплатная доставка по всему миру! Аутлет: до -70% Собственный бренд.
-                        Только сегодня ({{ current_date|date:"d.m.Y" }}) скидка -20% новым покупателям.
+                        Только сегодня ({% now "d.m.Y" %}) скидка -20% новым покупателям.
                     </p>
                     <button id="start-purchase-btn" type="button" class="btn btn-lg">
-                        <a id="start-purchase-link" href="{% url 'products' %}">
+                        <a id="start-purchase-link" href="{% url 'products:index' %}">
                             Начать покупки
                         </a>
                     </button>
