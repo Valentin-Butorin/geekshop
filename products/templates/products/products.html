@@ -14,11 +14,9 @@
 
                 <h1 class="my-4">GeekShop</h1>
                 <div class="list-group">
-                    <a href="#" class="list-group-item">Новинки</a>
-                    <a href="#" class="list-group-item">Одежда</a>
-                    <a href="#" class="list-group-item">Обувь</a>
-                    <a href="#" class="list-group-item">Аксессуары</a>
-                    <a href="#" class="list-group-item">Подарки</a>
+                    {% for category in categories %}
+                        <a href="#" class="list-group-item">{{ category.name }}</a>
+                    {% endfor %}
                 </div>
 
             </div>
@@ -62,7 +60,25 @@
                         <p>Товаров нет.</p>
                     {% else %}
                         {% for product in products %}
-                            {% include card_template with image=product.image name=product.name description=product.description is_in_cart=product.is_in_cart %}
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="card h-100">
+                                    <a href=#">
+                                        <img class="card-img-top"
+                                             src="{{ product.image.url }}"
+                                             alt="">
+                                    </a>
+                                    <div class="card-body">
+                                        <h4 class="card-title">
+                                            <a href="#">{{ name }}</a>
+                                        </h4>
+                                        <h5>{{ product.price }} руб.</h5>
+                                        <p class="card-text">{{ product.description }}</p>
+                                    </div>
+                                    <div class="card-footer text-center">
+                                        <button type="button" class="btn btn-outline-success">Отправить в корзину</button>
+                                    </div>
+                                </div>
+                            </div>
                         {% endfor %}
                     {% endif %}
 
