@@ -1,9 +1,9 @@
-from django.contrib import auth
+from django.contrib import auth, messages
 from django.shortcuts import render, HttpResponseRedirect
 from django.urls import reverse
 
-from users.forms import UserLoginForm, UserRegistrationForm
-from users.models import User
+from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
+from baskets.models import Basket
 
 
 def login(request):
@@ -32,6 +32,7 @@ def registration(request):
         form = UserRegistrationForm(data=request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Вы успешно зарегистрировались!')
             return HttpResponseRedirect(reverse('users:login'))
     else:
         form = UserRegistrationForm()
@@ -40,4 +41,19 @@ def registration(request):
 
 
 def profile(request):
-    pass
+    if not request.user.is_active:
+        return HttpResponseRedirect(reverse('index'))
+
+    if request.method == 'POST':
+        form = UserProfileForm(instance=request.user, files=request.FILES, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('users:profile'))
+
+    form = UserProfileForm(instance=request.user)
+    context = {
+        'title': 'GeekShop - Профиль',
+        'form': form,
+        'baskets': Basket.objects.filter(user_id=request.user),
+    }
+    return render(request, 'users/profile.html', context)
