@@ -30,10 +30,11 @@ window.onload = function () {
         $.ajax({
             url: '/baskets/add/' + button.id + '/',
             success: function (data) {
-                if (!data.authenticated) {
+                if (data.authenticated) {
+                    products_content.html(data.result);
+                } else {
                     window.location.pathname = data.redirect_url;
                 }
-                products_content.html(data.result);
             }
         });
     });
