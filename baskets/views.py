@@ -1,8 +1,10 @@
 from django.shortcuts import HttpResponseRedirect
 from products.models import Product
 from baskets.models import Basket
+from django.contrib.auth.decorators import login_required
 
 
+@login_required
 def basket_add(request, product_id):
     product = Product.objects.get(id=product_id)
     baskets = Basket.objects.filter(user=request.user, product=product)
