@@ -7,30 +7,20 @@ from django.conf import settings
 
 def basket_add(request, product_id):
     if request.is_ajax():
-        response_dict = {
-            'authenticated': request.user.is_authenticated,
-            'result': ''
-        }
+        response_dict = {'authenticated': request.user.is_authenticated}
         if not response_dict['authenticated']:
             response_dict['redirect_url'] = settings.LOGIN_URL
             return JsonResponse(response_dict)
 
-        baskets = Basket.objects.filter(user=request.user)
+        baskets = Basket.objects.filter(user=request.user, product=product_id)
         product = Product.objects.get(id=product_id)
-        product_in_basket = baskets.filter(product=product)
-        if not product_in_basket.exists():
+        if not baskets.exists():
             Basket.objects.create(user=request.user, product=product, quantity=1)
         else:
-            basket = product_in_basket.first()
+            basket = baskets.first()
             basket.quantity += 1
             basket.save()
 
-        context = {
-            'products': Product.objects.all(),
-            'categories': ProductCategory.objects.all(),
-            'basket_content': [basket.product.id for basket in baskets],
-        }
-        response_dict['result'] = render_to_string('products/products_content.html', context)
         return JsonResponse(response_dict)
 
 

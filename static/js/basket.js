@@ -1,6 +1,6 @@
 window.onload = function () {
     const basket_list = $('.basket_list');
-    const products_content = $('.content');
+    const products_content = $('.products-content');
 
     basket_list.on('click', 'input[type="number"]', function () {
         const t_href = event.target;
@@ -27,15 +27,19 @@ window.onload = function () {
     products_content.on('click', '.btn', function () {
         const button = event.target;
 
-        $.ajax({
-            url: '/baskets/add/' + button.id + '/',
-            success: function (data) {
-                if (data.authenticated) {
-                    products_content.html(data.result);
-                } else {
-                    window.location.pathname = data.redirect_url;
+        if (button.classList.contains('btn-outline-success')) {
+            $.ajax({
+                url: '/baskets/add/' + button.id + '/',
+                success: function (data) {
+                    if (data.authenticated) {
+                        button.classList.toggle('btn-outline-success');
+                        button.classList.toggle('btn-outline-danger');
+                        button.innerText = 'Уже в корзине';
+                    } else {
+                        window.location.pathname = data.redirect_url;
+                    }
                 }
-            }
-        });
+            });
+        }
     });
 }
