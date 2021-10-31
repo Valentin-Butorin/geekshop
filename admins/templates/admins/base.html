@@ -71,7 +71,11 @@
         </nav>
     </div>
     <div id="layoutSidenav_content">
-        {% block content %}{% endblock %}
+        <main>
+            <div class="container-fluid">
+                {% block content %} {% endblock %}
+            </div>
+        </main>
         <footer class="py-4 bg-light mt-auto">
             <div class="container-fluid">
                 <div class="d-flex align-items-center justify-content-between small">
