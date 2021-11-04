@@ -17,10 +17,35 @@ class ProductsListView(ListView):
     paginate_by = 3
 
     def get_context_data(self, *, object_list=None, **kwargs):
-        context = super(ProductsListView, self).get_context_data(object_list=None, **kwargs)
         category_id = self.kwargs.get('pk')
-        if category_id:
-            context['object_list'] = self.model.objects.filter(category_id=category_id)
-            print(context)
+        if object_list:
+            queryset = object_list
+        else:
+            if category_id:
+                queryset = self.object_list.filter(category_id=category_id)
+            else:
+                queryset = self.object_list
+
+        page_size = self.get_paginate_by(queryset)
+        context_object_name = self.get_context_object_name(queryset)
+        if page_size:
+            paginator, page, queryset, is_paginated = self.paginate_queryset(queryset, page_size)
+            context = {
+                'paginator': paginator,
+                'page_obj': page,
+                'is_paginated': is_paginated,
+                'object_list': queryset
+            }
+        else:
+            context = {
+                'paginator': None,
+                'page_obj': None,
+                'is_paginated': False,
+                'object_list': queryset
+            }
+        if context_object_name is not None:
+            context[context_object_name] = queryset
+        context.update(kwargs)
         context['categories'] = ProductCategory.objects.all()
+        context['title'] = 'GeekShop - Каталог'
         return context
