@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from products.models import Product, ProductCategory
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic.list import ListView
 
 from baskets.models import Basket
@@ -46,6 +45,9 @@ class ProductsListView(ListView):
         if context_object_name is not None:
             context[context_object_name] = queryset
         context.update(kwargs)
+
+        if self.request.user.is_authenticated:
+            context['basket_content'] = [basket.product.id for basket in Basket.objects.filter(user=self.request.user)]
         context['categories'] = ProductCategory.objects.all()
         context['title'] = 'GeekShop - Каталог'
         return context
