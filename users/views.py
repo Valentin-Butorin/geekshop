@@ -31,17 +31,20 @@ class LogoutRedirectView(RedirectView):
         return super(LogoutRedirectView, self).get(request, *args, **kwargs)
 
 
-def registration(request):
-    if request.method == 'POST':
-        form = UserRegistrationForm(data=request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Вы успешно зарегистрировались!')
-            return HttpResponseRedirect(reverse('users:login'))
-    else:
-        form = UserRegistrationForm()
-    context = {'title': 'GeekShop - Регистрация', 'form': form}
-    return render(request, 'users/register.html', context)
+class RegistrationFormView(FormView):
+    template_name = 'users/register.html'
+    success_url = reverse_lazy('users:login')
+    form_class = UserRegistrationForm
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, 'Вы успешно зарегистрировались!')
+        return super(RegistrationFormView, self).form_valid(form)
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return HttpResponseRedirect(reverse('index'))
+        return super(RegistrationFormView, self).get(request, *args, **kwargs)
 
 
 @login_required
