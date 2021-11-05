@@ -81,10 +81,6 @@ class ProfileFormView(UpdateView):
         context['baskets'] = Basket.objects.filter(user_id=self.request.user)
         return context
 
-    def form_valid(self, form):
-        form.save()
-        return super(ProfileFormView, self).form_valid(form)
-
     @method_decorator(login_required())
     def dispatch(self, request, *args, **kwargs):
         return super(ProfileFormView, self).dispatch(request, *args, **kwargs)
