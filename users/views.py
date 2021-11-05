@@ -2,10 +2,13 @@ from django.contrib import auth, messages
 from django.shortcuts import render, HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.views.generic import RedirectView, FormView
+from django.views.generic.edit import UpdateView
 
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
 from baskets.models import Basket
+from users.models import User
 
 
 class LoginFormView(FormView):
@@ -21,6 +24,11 @@ class LoginFormView(FormView):
         if request.user.is_authenticated:
             return HttpResponseRedirect(reverse('index'))
         return super(LoginFormView, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(LoginFormView, self).get_context_data(**kwargs)
+        context['title'] = 'GeekShop - Авторизация'
+        return context
 
 
 class LogoutRedirectView(RedirectView):
@@ -45,6 +53,41 @@ class RegistrationFormView(FormView):
         if request.user.is_authenticated:
             return HttpResponseRedirect(reverse('index'))
         return super(RegistrationFormView, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(RegistrationFormView, self).get_context_data(**kwargs)
+        context['title'] = 'GeekShop - Регистрация'
+        return context
+
+
+class ProfileFormView(UpdateView):
+    model = User
+    template_name = 'users/profile.html'
+    success_url = reverse_lazy('users:profile')
+    form_class = UserProfileForm
+    pk_url_kwarg = 'id'
+
+    def post(self, request, *args, **kwargs):
+        self.kwargs[self.pk_url_kwarg] = self.request.user.id
+        return super(ProfileFormView, self).post(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        self.kwargs[self.pk_url_kwarg] = self.request.user.id
+        return super(ProfileFormView, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(ProfileFormView, self).get_context_data(**kwargs)
+        context['title'] = 'GeekShop - Профиль'
+        context['baskets'] = Basket.objects.filter(user_id=self.request.user)
+        return context
+
+    def form_valid(self, form):
+        form.save()
+        return super(ProfileFormView, self).form_valid(form)
+
+    @method_decorator(login_required())
+    def dispatch(self, request, *args, **kwargs):
+        return super(ProfileFormView, self).dispatch(request, *args, **kwargs)
 
 
 @login_required
