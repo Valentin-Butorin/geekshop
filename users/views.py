@@ -2,6 +2,7 @@ from django.contrib import auth, messages
 from django.shortcuts import render, HttpResponseRedirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.views.generic import RedirectView
 
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
 from baskets.models import Basket
@@ -23,9 +24,12 @@ def login(request):
     return render(request, 'users/login.html', context)
 
 
-def logout(request):
-    auth.logout(request)
-    return HttpResponseRedirect(reverse('index'))
+class LogoutRedirectView(RedirectView):
+    url = '/'
+
+    def get(self, request, *args, **kwargs):
+        auth.logout(request)
+        return super(LogoutRedirectView, self).get(request, *args, **kwargs)
 
 
 def registration(request):
