@@ -67,14 +67,6 @@ class ProfileFormView(UpdateView):
     form_class = UserProfileForm
     pk_url_kwarg = 'id'
 
-    def post(self, request, *args, **kwargs):
-        self.kwargs[self.pk_url_kwarg] = self.request.user.id
-        return super(ProfileFormView, self).post(request, *args, **kwargs)
-
-    def get(self, request, *args, **kwargs):
-        self.kwargs[self.pk_url_kwarg] = self.request.user.id
-        return super(ProfileFormView, self).get(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
         context = super(ProfileFormView, self).get_context_data(**kwargs)
         context['title'] = 'GeekShop - Профиль'
@@ -83,6 +75,7 @@ class ProfileFormView(UpdateView):
 
     @method_decorator(login_required())
     def dispatch(self, request, *args, **kwargs):
+        self.kwargs[self.pk_url_kwarg] = self.request.user.id
         return super(ProfileFormView, self).dispatch(request, *args, **kwargs)
 
 
