@@ -23,7 +23,7 @@
                     </tr>
                     </tfoot>
                     <tbody>
-                    {% for category in categories %}
+                    {% for category in object_list %}
                         <tr>
                             <td><a href="{% url 'admins:admin_categories_update' category.id %}" style="color: dodgerblue">
                                     {{ category.name }}

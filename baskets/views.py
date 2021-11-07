@@ -1,4 +1,4 @@
-from products.models import Product, ProductCategory
+from products.models import Product
 from baskets.models import Basket
 from django.template.loader import render_to_string
 from django.http import JsonResponse
