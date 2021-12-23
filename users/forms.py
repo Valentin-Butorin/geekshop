@@ -1,6 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from users.models import User
+from random import random
+from hashlib import sha1
+from datetime import datetime, timedelta
 
 
 class UserLoginForm(AuthenticationForm):
@@ -31,6 +34,14 @@ class UserRegistrationForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2')
+
+    def save(self, *args, **kwargs):
+        user = super().save(*args, **kwargs)
+        user.activation_key = sha1(str(random()).encode('utf8')).hexdigest()
+        user.activation_key_expires = datetime.now() + timedelta(hours=48)
+        user.safe_delete()
+        user.send_verify_mail()
+        return user
 
 
 class UserProfileForm(UserChangeForm):
