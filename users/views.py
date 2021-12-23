@@ -75,7 +75,7 @@ class ProfileFormView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super(ProfileFormView, self).get_context_data(**kwargs)
         context['title'] = 'GeekShop - Профиль'
-        context['baskets'] = Basket.objects.filter(user_id=self.request.user)
+        # context['basket'] = Basket.objects.filter(user_id=self.request.user)
         return context
 
     @method_decorator(login_required())
