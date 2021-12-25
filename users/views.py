@@ -1,9 +1,9 @@
 from django.contrib import auth, messages
-from django.shortcuts import render, HttpResponseRedirect
+from django.shortcuts import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.views.generic import RedirectView, FormView
+from django.views.generic import RedirectView, FormView, TemplateView
 from django.views.generic.edit import UpdateView
 
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
@@ -46,7 +46,12 @@ class RegistrationFormView(FormView):
 
     def form_valid(self, form):
         form.save()
-        messages.success(self.request, 'Вы успешно зарегистрировались!')
+
+        messages.success(
+            self.request,
+            'Вы успешно зарегистрировались!'
+            'Для подтверждения учетной записи перейдите по ссылке, '
+            'отправленной на почтовый адрес, указанный Вами при регистрации')
         return super(RegistrationFormView, self).form_valid(form)
 
     def get(self, request, *args, **kwargs):
@@ -70,7 +75,6 @@ class ProfileFormView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super(ProfileFormView, self).get_context_data(**kwargs)
         context['title'] = 'GeekShop - Профиль'
-        context['baskets'] = Basket.objects.filter(user_id=self.request.user)
         return context
 
     @method_decorator(login_required())
@@ -79,18 +83,21 @@ class ProfileFormView(UpdateView):
         return super(ProfileFormView, self).dispatch(request, *args, **kwargs)
 
 
-@login_required
-def profile(request):
-    if request.method == 'POST':
-        form = UserProfileForm(instance=request.user, files=request.FILES, data=request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect(reverse('users:profile'))
+class VerifyView(TemplateView):
+    template_name = 'users/verification.html'
 
-    form = UserProfileForm(instance=request.user)
-    context = {
-        'title': 'GeekShop - Профиль',
-        'form': form,
-        'baskets': Basket.objects.filter(user_id=request.user),
-    }
-    return render(request, 'users/profile.html', context)
+    def get(self, request, *args, **kwargs):
+        email = kwargs['email']
+        activation_key = kwargs['activation_key']
+
+        response = super().get(request, *args, **kwargs)
+        response.context_data['user'] = None
+
+        user = User.objects.filter(email=email).first()
+
+        if user:
+            if user.verify(email, activation_key):
+                auth.login(request, user)
+                response.context_data['user'] = user
+
+        return response
