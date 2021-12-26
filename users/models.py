@@ -10,6 +10,7 @@ from django.urls import reverse
 
 class User(AbstractUser):
     image = models.ImageField(upload_to='users_images', blank=True, null=True)
+    age = models.PositiveSmallIntegerField(default=18, verbose_name='Возраст')
 
     activation_key = models.CharField(max_length=128, blank=True, null=True)
     activation_key_expires = models.DateTimeField(blank=True, null=True)

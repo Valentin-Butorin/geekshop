@@ -97,7 +97,7 @@ class VerifyView(TemplateView):
 
         if user:
             if user.verify(email, activation_key):
-                auth.login(request, user)
+                auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 response.context_data['user'] = user
 
         return response
