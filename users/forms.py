@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
-from users.models import User
+from django.forms import ModelForm
+
+from users.models import User, UserProfile
 from random import random
 from hashlib import sha1
 from datetime import datetime, timedelta
@@ -57,3 +59,13 @@ class UserProfileForm(UserChangeForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name', 'age', 'image')
+
+
+class UserAdditionalProfileForm(ModelForm):
+    tagline = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}), required=False)
+    about_me = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}), required=False)
+    gender = forms.ChoiceField(choices=UserProfile.GENDERS, widget=forms.Select(attrs={'class': 'form-control'}))
+
+    class Meta:
+        model = UserProfile
+        fields = ('tagline', 'about_me', 'gender')

@@ -3,7 +3,9 @@ from django.conf import settings
 from django.core.mail import send_mail
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from datetime import datetime, timedelta
+from datetime import datetime
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 from django.urls import reverse
 
@@ -38,3 +40,26 @@ class User(AbstractUser):
             self.save()
             return True
         return False
+
+
+class UserProfile(models.Model):
+    MALE = 'M'
+    FEMALE = 'F'
+    UNKNOWN = 'U'
+
+    GENDERS = (
+        (MALE, 'Мужской'),
+        (FEMALE, 'Женский'),
+        (UNKNOWN, 'Не указан'),
+    )
+
+    user = models.OneToOneField(User, unique=True, null=False, db_index=True, on_delete=models.CASCADE)
+
+    tagline = models.CharField(max_length=128, blank=True, null=True, verbose_name='Тэги')
+    about_me = models.CharField(max_length=512, blank=True, null=True, verbose_name='Обо мне')
+    gender = models.CharField(choices=GENDERS, default=UNKNOWN, max_length=1, verbose_name='Пол')
+
+    @receiver(post_save, sender=User)
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            UserProfile.objects.create(user=instance).save()
