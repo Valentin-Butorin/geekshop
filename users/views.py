@@ -6,8 +6,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import RedirectView, FormView, TemplateView
 from django.views.generic.edit import UpdateView
 
-from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm
-from baskets.models import Basket
+from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, UserAdditionalProfileForm
 from users.models import User
 
 
@@ -75,12 +74,23 @@ class ProfileFormView(UpdateView):
     def get_context_data(self, **kwargs):
         context = super(ProfileFormView, self).get_context_data(**kwargs)
         context['title'] = 'GeekShop - Профиль'
+        context['additional_profile_form'] = UserAdditionalProfileForm(instance=self.request.user.userprofile)
         return context
 
     @method_decorator(login_required())
     def dispatch(self, request, *args, **kwargs):
         self.kwargs[self.pk_url_kwarg] = self.request.user.id
         return super(ProfileFormView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        profile_form = self.get_form(UserAdditionalProfileForm)
+        profile_form.instance = self.request.user.userprofile
+
+        if profile_form.is_valid():
+            profile_form.save()
+            return super().form_valid(form)
+
+        return HttpResponseRedirect(reverse('users:profile'))
 
 
 class VerifyView(TemplateView):
@@ -97,7 +107,7 @@ class VerifyView(TemplateView):
 
         if user:
             if user.verify(email, activation_key):
-                auth.login(request, user)
+                auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 response.context_data['user'] = user
 
         return response

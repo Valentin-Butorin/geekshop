@@ -43,6 +43,9 @@
                                     <a class="small" href="#">Забыли пароль?</a>
                                     <input class="btn btn-primary" type="submit" value="Авторизоваться">
                                 </div>
+                                <div class="mt-4 mb-0 text-center">
+                                    <a href="{% url 'social:begin' 'vk-oauth2' %}?next=/" class="btn btn-outline-primary rounded-pill">VK</a>
+                                </div>
                             </form>
                         </div>
                         <div class="card-footer text-center">
