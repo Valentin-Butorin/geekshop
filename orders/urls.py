@@ -11,4 +11,5 @@ urlpatterns = [
     path('read/<pk>/', views.OrderDetailView.as_view(), name='read'),
     path('delete/<pk>/', views.OrderDeleteView.as_view(), name='delete'),
     path('complete/<pk>/', views.complete, name='complete'),
+    path('product/<pk>/price/', views.get_price, name='get_price'),
 ]
