@@ -56,7 +56,7 @@ def save_user_profile(backend, user, response, *args, **kwargs):
             filename = photo_url[:photo_url.index('?')].split('/')[-1]
             image_path = 'users_images/' + filename
 
-            with open(f'{settings.MEDIA_ROOT}\{image_path}', 'wb') as f:
+            with open(f'{settings.MEDIA_ROOT}/{image_path}', 'wb') as f:
                 f.write(requests.get(photo_url, stream=True).content)
 
             user.image = image_path
