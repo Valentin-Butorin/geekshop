@@ -77,6 +77,8 @@ class ProfileFormView(UpdateView):
         context['additional_profile_form'] = UserAdditionalProfileForm(instance=self.request.user.userprofile)
         baskets = self.request.user.basket_set.prefetch_related('product')
         context['baskets'] = baskets
+        context['total_quantity'] = sum(basket.quantity for basket in baskets)
+        context['total_sum'] = sum(basket.quantity * basket.product.price for basket in baskets)
 
         return context
 
