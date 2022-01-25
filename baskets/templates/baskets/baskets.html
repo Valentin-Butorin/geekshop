@@ -30,7 +30,7 @@
         <div class="card mb-3">
             <div class="card-footer">
                 <p class="float-left">Итого</p>
-                <h4 class="float-right">{{ baskets.0.total_sum }} руб.</h4>
+                <h4 class="float-right">{{ user.basket_total_sum }} руб.</h4>
             </div>
         </div>
         <a href="{% url 'orders:create' %}" class="btn btn-success btn-lg float-right">Оформить</a>

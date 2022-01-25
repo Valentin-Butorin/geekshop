@@ -47,7 +47,7 @@ class ProductsListView(ListView):
         context.update(kwargs)
 
         if self.request.user.is_authenticated:
-            context['basket_content'] = [basket.product.id for basket in Basket.objects.filter(user=self.request.user)]
+            context['basket_content'] = [basket.product.id for basket in self.request.user.basket_set.select_related('product')]
         context['categories'] = ProductCategory.objects.all()
         context['title'] = 'GeekShop - Каталог'
         return context

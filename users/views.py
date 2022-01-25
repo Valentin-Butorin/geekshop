@@ -75,6 +75,13 @@ class ProfileFormView(UpdateView):
         context = super(ProfileFormView, self).get_context_data(**kwargs)
         context['title'] = 'GeekShop - Профиль'
         context['additional_profile_form'] = UserAdditionalProfileForm(instance=self.request.user.userprofile)
+        baskets = self.request.user.basket_set.select_related('product', 'user')
+        context['baskets'] = baskets
+        # if baskets:
+        #     context['has_baskets'] = True
+        # else:
+        #     context['has_baskets'] = False
+
         return context
 
     @method_decorator(login_required())
