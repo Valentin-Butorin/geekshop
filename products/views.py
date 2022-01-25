@@ -21,7 +21,7 @@ class ProductsListView(ListView):
             queryset = object_list
         else:
             if category_id:
-                queryset = self.object_list.filter(category_id=category_id)
+                queryset = self.object_list.filter(category_id=category_id).select_related()
             else:
                 queryset = self.object_list
 
@@ -43,11 +43,11 @@ class ProductsListView(ListView):
                 'object_list': queryset
             }
         if context_object_name is not None:
-            context[context_object_name] = queryset
+            context[context_object_name] = queryset.select_related()
         context.update(kwargs)
 
         if self.request.user.is_authenticated:
-            context['basket_content'] = [basket.product.id for basket in self.request.user.basket_set.select_related('product')]
-        context['categories'] = ProductCategory.objects.all()
+            context['basket_content'] = [basket.product.id for basket in self.request.user.basket_set.select_related()]
+        context['categories'] = ProductCategory.objects.all().select_related()
         context['title'] = 'GeekShop - Каталог'
         return context
