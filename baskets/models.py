@@ -26,10 +26,10 @@ class Basket(models.Model):
         return self.product.price * self.quantity
 
     def total_sum(self):
-        return sum(basket.sum() for basket in self.baskets.select_related())
+        return sum(basket.sum() for basket in self.baskets)
 
     def total_quantity(self):
-        return sum(basket.quantity for basket in self.baskets.select_related())
+        return sum(basket.quantity for basket in self.baskets)
 
     @property
     def baskets(self):
