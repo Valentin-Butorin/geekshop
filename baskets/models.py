@@ -33,4 +33,4 @@ class Basket(models.Model):
 
     @property
     def baskets(self):
-        return Basket.objects.filter(user_id=self.user)
+        return Basket.objects.filter(user_id=self.user).select_related()

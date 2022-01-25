@@ -43,11 +43,7 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'users:profile' %}">
                                 <span id="basket-total-sum">
-                                    {% if baskets.0.total_sum %}
-                                        {{ baskets.0.total_sum }}
-                                    {% else %}
-                                        0,00
-                                    {% endif %}
+                                    {{ user.basket_total_sum }}
                                 </span>
                             руб.
                             <i class="fas fa-shopping-cart"></i>
