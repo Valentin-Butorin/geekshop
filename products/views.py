@@ -4,6 +4,7 @@ from django.views.generic.list import ListView
 
 from django.core.cache import cache
 from django.conf import settings
+from django.views.decorators.cache import cache_page
 
 
 def get_categories():
@@ -18,6 +19,7 @@ def get_categories():
 		return ProductCategory.objects.all()
 
 
+@cache_page(3600)
 def index(request):
 	context = {'title': 'Geekshop'}
 	return render(request, 'products/index.html', context)
