@@ -34,14 +34,10 @@ def basket_remove(request, id):
 
         baskets = Basket.objects.filter(user=request.user)
         context = {'baskets': baskets}
+        context['total_quantity'] = sum(basket.quantity for basket in baskets)
+        context['total_sum'] = sum(basket.quantity * basket.product.price for basket in baskets)
         result = render_to_string('baskets/baskets.html', context)
-
-        if baskets.exists():
-            basket_total_sum = baskets.first().total_sum()
-        else:
-            basket_total_sum = 0
-
-        return JsonResponse({'result': result, 'basket_total_sum': basket_total_sum})
+        return JsonResponse({'result': result})
 
 
 def basket_edit(request, id, quantity):
@@ -57,11 +53,7 @@ def basket_edit(request, id, quantity):
 
         baskets = Basket.objects.filter(user=request.user)
         context = {'baskets': baskets}
+        context['total_quantity'] = sum(basket.quantity for basket in baskets)
+        context['total_sum'] = sum(basket.quantity * basket.product.price for basket in baskets)
         result = render_to_string('baskets/baskets.html', context)
-
-        if baskets.exists():
-            basket_total_sum = baskets.first().total_sum()
-        else:
-            basket_total_sum = 0
-
-        return JsonResponse({'result': result, 'basket_total_sum': basket_total_sum})
+        return JsonResponse({'result': result})

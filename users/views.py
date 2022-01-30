@@ -80,7 +80,6 @@ class ProfileFormView(UpdateView):
         context['baskets'] = baskets
         context['total_quantity'] = sum(basket.quantity for basket in baskets)
         context['total_sum'] = sum(basket.quantity * basket.product.price for basket in baskets)
-
         return context
 
     @method_decorator(login_required())

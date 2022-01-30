@@ -63,7 +63,7 @@ class ProductsListView(ListView):
 
 		if self.request.user.is_authenticated:
 			context['basket_content'] = [basket.product.id for basket in
-										 self.request.user.basket_set.prefetch_related('product')]
+										 self.request.user.basket_set.select_related('product')]
 		context['categories'] = get_categories()
 		context['title'] = 'GeekShop - Каталог'
 		return context
