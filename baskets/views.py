@@ -3,6 +3,7 @@ from baskets.models import Basket
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from django.conf import settings
+from django.db.models import F
 
 
 def basket_add(request, product_id):
@@ -18,10 +19,10 @@ def basket_add(request, product_id):
             Basket.objects.create(user=request.user, product=product, quantity=1)
         else:
             basket = baskets.first()
-            basket.quantity += 1
+            basket.quantity = F('quantity') + 1
             basket.save()
 
-        response_dict['basket_total_sum'] = baskets.first().total_sum()
+        response_dict['basket_total_sum'] = baskets.first().get_total_sum
 
         return JsonResponse(response_dict)
 
