@@ -200,7 +200,8 @@ EMAIL_HOST_USER = 'django@django.test'
 EMAIL_HOST_PASSWORD = 'django'
 EMAIL_USE_SSL = False
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = 'tmp/app-messages'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
