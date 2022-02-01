@@ -19,7 +19,7 @@ def get_categories():
         return ProductCategory.objects.all()
 
 
-@cache_page(3600)
+# @cache_page(3600)
 def index(request):
     context = {'title': 'Geekshop'}
     return render(request, 'products/index.html', context)
