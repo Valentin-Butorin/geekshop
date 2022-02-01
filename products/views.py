@@ -61,9 +61,8 @@ class ProductsListView(ListView):
             context[context_object_name] = queryset
         context.update(kwargs)
 
-        baskets = self.request.user.basket_set.select_related('product')
-
         if self.request.user.is_authenticated:
+            baskets = self.request.user.basket_set.select_related('product')
             if baskets:
                 context['basket_content'] = [basket.product.id for basket in baskets]
                 baskets_total_sum = baskets[0].get_total_sum
