@@ -21,6 +21,11 @@
         <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
         <script src="{% static 'js/jquery.formset.js' %}"></script>
         <script src="{% static 'js/orders_script.js' %}"></script>
+        <!-- Bootstrap core JavaScript -->
+        <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+
+        <!-- FontAwesome script -->
+        <script src="{% static 'vendor/fontawesome/fontawesome-icons.js' %}" crossorigin="anonymous"></script>
     {% endblock %}
 
 </head>
@@ -38,8 +43,7 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'products:index' %}">Каталог <i class="fas fa-shopping-bag"></i>
-                    </a>
+                    <a class="nav-link" href="{% url 'products:index' %}">Каталог <i class="fas fa-shopping-bag"></i> </a>
                 </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item">
@@ -49,11 +53,13 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'users:profile' %}">
-                                <span id="basket-total-sum">
-                                        {{ baskets.0.get_total_sum }}
-                                </span>
-                            руб.
-                            <i class="fas fa-shopping-cart"></i>
+                            <span class="basket-nav-sum">
+                                {% if user.basket_set.exists %}
+                                    {{ user.basket_set.first.get_total_sum }}
+                                {% else %}
+                                    0,00
+                                {% endif %}
+                            </span> руб. <i class="fas fa-shopping-cart" aria-hidden="true"></i>
                         </a>
                     </li>
                     {% if user.is_superuser or user.is_staff %}
@@ -67,8 +73,7 @@
                         <a class="nav-link" href="{% url 'orders:list' %}">Заказы <i class="fas fa-receipt"></i></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'users:logout' %}">Выйти <i
-                                class="fas fa-sign-out-alt"></i></a>
+                        <a class="nav-link" href="{% url 'users:logout' %}">Выйти <i class="fas fa-sign-out-alt"></i></a>
                     </li>
                 {% else %}
                     <li class="nav-item">
