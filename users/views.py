@@ -76,7 +76,7 @@ class ProfileFormView(UpdateView):
         context = super(ProfileFormView, self).get_context_data(**kwargs)
         context['title'] = 'GeekShop - Профиль'
         context['additional_profile_form'] = UserAdditionalProfileForm(instance=self.request.user.userprofile)
-        baskets = self.request.user.basket_set.select_related('product').order_by('name')
+        baskets = self.request.user.basket_set.select_related('product')
         context['baskets'] = baskets
         context['total_quantity'] = sum(basket.quantity for basket in baskets)
         context['total_sum'] = sum(basket.quantity * basket.product.price for basket in baskets)
