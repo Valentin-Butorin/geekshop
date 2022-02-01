@@ -13,8 +13,10 @@ window.onload = function () {
             success: function (data) {
                 basket_list.html(data.result);
                 basketSum.innerText = data.total_sum;
-                basketNavMenuSum.innerText = data.total_sum;
-                basketQuantity.innerText = data.total_quantity
+                basketNavMenuSum.innerText = basketSum.innerText;
+                console.log(basketSum.innerText);
+                console.log(basketNavMenuSum.innerText);
+                basketQuantity.innerText = data.total_quantity;
             }
         });
     });
@@ -27,8 +29,8 @@ window.onload = function () {
             success: function (data) {
                 basket_list.html(data.result);
                 basketSum.innerText = data.total_sum;
-                basketNavMenuSum.innerText = data.total_sum;
-                basketQuantity.innerText = data.total_quantity
+                basketNavMenuSum.innerText = basketSum.innerText;
+                basketQuantity.innerText = data.total_quantity;
             }
         });
     });
@@ -45,7 +47,7 @@ window.onload = function () {
                         button.classList.toggle('btn-outline-danger');
                         button.innerText = 'Уже в корзине';
                         basketSum.innerText = data.total_sum;
-                        basketNavMenuSum.innerText = data.total_sum;
+                        basketNavMenuSum.innerText = basketSum.innerText;
                     } else {
                         window.location.pathname = data.redirect_url;
                     }
