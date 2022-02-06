@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-q-ck%q))ss(kboxuh=hoe^*#2hndl+6!jb)9z!lm(fi!bjs&c&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -200,7 +200,8 @@ EMAIL_HOST_USER = 'django@django.test'
 EMAIL_HOST_PASSWORD = 'django'
 EMAIL_USE_SSL = False
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = 'tmp/app-messages'
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',

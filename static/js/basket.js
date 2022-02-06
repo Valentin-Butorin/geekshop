@@ -1,7 +1,8 @@
 window.onload = function () {
     const basket_list = $('.basket_list');
     const products_content = $('.products-content');
-    const basketSum = $('#basket-total-sum');
+    const basketSum = $('.basket-total-sum');
+    const basketQuantity = $('.basket-total-quantity');
 
     basket_list.on('click', 'input[type="number"]', function () {
         const t_href = event.target;
@@ -10,7 +11,9 @@ window.onload = function () {
             url: '/baskets/edit/' + t_href.name + '/' + t_href.value + '/',
             success: function (data) {
                 basket_list.html(data.result);
-                basketSum[0].innerText = data.basket_total_sum
+                var basketNavMenuSum = document.querySelector('.basket-nav-sum');
+                var basketSum = document.querySelector('.basket-total-sum');
+                basketNavMenuSum.innerText = basketSum.innerText;
             }
         });
     });
@@ -22,7 +25,9 @@ window.onload = function () {
             url: '/baskets/remove/' + a_href.id + '/',
             success: function (data) {
                 basket_list.html(data.result);
-                basketSum[0].innerText = data.basket_total_sum
+                var basketNavMenuSum = document.querySelector('.basket-nav-sum');
+                var basketSum = document.querySelector('.basket-total-sum');
+                basketNavMenuSum.innerText = basketSum.innerText;
             }
         });
     });
@@ -38,7 +43,8 @@ window.onload = function () {
                         button.classList.toggle('btn-outline-success');
                         button.classList.toggle('btn-outline-danger');
                         button.innerText = 'Уже в корзине';
-                        basketSum[0].innerText = data.basket_total_sum
+                        var basketNavMenuSum = document.querySelector('.basket-nav-sum');
+                        basketNavMenuSum.innerText = data.total_sum;
                     } else {
                         window.location.pathname = data.redirect_url;
                     }
