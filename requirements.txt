@@ -20,3 +20,7 @@ social-auth-app-django==5.0.0
 social-auth-core==4.2.0
 sqlparse==0.4.2
 urllib3==1.26.8
+django-debug-toolbar==3.2.4
+django-debug-toolbar-template-profiler==2.0.2
+django-extensions==3.1.5
+python-memcached==1.59

@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.utils.decorators import method_decorator
+from django.db.models import F
 
 from users.models import User
 from admins.forms import UserAdminRegistrationForm, UserAdminProfileForm, CategoryAdminFrom
@@ -124,6 +125,14 @@ class CategoryUpdateView(UpdateView):
     @method_decorator(user_passes_test(lambda u: u.is_staff))
     def dispatch(self, request, *args, **kwargs):
         return super(CategoryUpdateView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        if 'discount' in form.cleaned_data:
+            discount = form.cleaned_data['discount']
+            if discount:
+                self.object.product_set.update(price=F('price') * (1 - discount / 100))
+
+        return super().form_valid(form)
 
 
 class CategoryDeleteView(DeleteView):

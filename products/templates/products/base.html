@@ -42,15 +42,13 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'users:profile' %}">
-                                <span id="basket-total-sum">
-                                    {% if baskets.0.total_sum %}
-                                        {{ baskets.0.total_sum }}
-                                    {% else %}
-                                        0,00
-                                    {% endif %}
-                                </span>
-                            руб.
-                            <i class="fas fa-shopping-cart"></i>
+                            <span class="basket-nav-sum">
+                                {% if user.basket_set.exists %}
+                                    {{ user.basket_set.first.get_total_sum }}
+                                {% else %}
+                                    0,00
+                                {% endif %}
+                            </span> руб. <i class="fas fa-shopping-cart"></i>
                         </a>
                     </li>
                     {% if user.is_superuser or user.is_staff %}

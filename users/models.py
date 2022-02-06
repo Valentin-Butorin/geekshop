@@ -41,6 +41,10 @@ class User(AbstractUser):
             return True
         return False
 
+    @property
+    def basket_total_sum(self):
+        return sum(basket.quantity * basket.product.price for basket in self.basket_set.select_related())
+
 
 class UserProfile(models.Model):
     MALE = 'M'
