@@ -3,6 +3,7 @@ from baskets.models import Basket
 from django.template.loader import render_to_string
 from django.http import JsonResponse
 from django.conf import settings
+from django.db.models import F
 
 
 def basket_add(request, product_id):
@@ -18,10 +19,10 @@ def basket_add(request, product_id):
             Basket.objects.create(user=request.user, product=product, quantity=1)
         else:
             basket = baskets.first()
-            basket.quantity += 1
+            basket.quantity = F('quantity') + 1
             basket.save()
 
-        response_dict['basket_total_sum'] = baskets.first().total_sum()
+        response_dict['total_sum'] = baskets.first().get_total_sum
 
         return JsonResponse(response_dict)
 
@@ -31,16 +32,12 @@ def basket_remove(request, id):
         basket = Basket.objects.get(id=id)
         basket.delete()
 
-        baskets = Basket.objects.filter(user=request.user)
+        baskets = Basket.objects.filter(user=request.user).select_related('product').order_by('product__name')
         context = {'baskets': baskets}
+        context['total_quantity'] = sum(basket.quantity for basket in baskets)
+        context['total_sum'] = sum(basket.quantity * basket.product.price for basket in baskets)
         result = render_to_string('baskets/baskets.html', context)
-
-        if baskets.exists():
-            basket_total_sum = baskets.first().total_sum()
-        else:
-            basket_total_sum = 0
-
-        return JsonResponse({'result': result, 'basket_total_sum': basket_total_sum})
+        return JsonResponse({'result': result})
 
 
 def basket_edit(request, id, quantity):
@@ -54,13 +51,9 @@ def basket_edit(request, id, quantity):
         else:
             basket.delete()
 
-        baskets = Basket.objects.filter(user=request.user)
+        baskets = Basket.objects.filter(user=request.user).select_related('product').order_by('product__name')
         context = {'baskets': baskets}
+        context['total_quantity'] = sum(basket.quantity for basket in baskets)
+        context['total_sum'] = sum(basket.quantity * basket.product.price for basket in baskets)
         result = render_to_string('baskets/baskets.html', context)
-
-        if baskets.exists():
-            basket_total_sum = baskets.first().total_sum()
-        else:
-            basket_total_sum = 0
-
-        return JsonResponse({'result': result, 'basket_total_sum': basket_total_sum})
+        return JsonResponse({'result': result})

@@ -21,8 +21,10 @@ class UserAdminProfileForm(UserProfileForm):
 class CategoryAdminFrom(forms.ModelForm):
     name = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}))
     description = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control py-4'}), required=False)
+    discount = forms.IntegerField(label='Скидка', required=False, min_value=0, max_value=90,
+                                  widget=forms.NumberInput(attrs={'class': 'form-control py-4'}))
 
     class Meta:
         model = ProductCategory
-        fields = ('name', 'description')
+        fields = '__all__'
 

@@ -2,9 +2,24 @@ from django.shortcuts import render
 from products.models import Product, ProductCategory
 from django.views.generic.list import ListView
 
-from baskets.models import Basket
+from django.core.cache import cache
+from django.conf import settings
+from django.views.decorators.cache import cache_page
 
 
+def get_categories():
+    if settings.LOW_CACHE:
+        key = 'categories'
+        categories = cache.get(key)
+        if categories is None:
+            categories = ProductCategory.objects.all()
+            cache.set(key, categories)
+        return categories
+    else:
+        return ProductCategory.objects.all()
+
+
+# @cache_page(3600)
 def index(request):
     context = {'title': 'Geekshop'}
     return render(request, 'products/index.html', context)
@@ -47,7 +62,14 @@ class ProductsListView(ListView):
         context.update(kwargs)
 
         if self.request.user.is_authenticated:
-            context['basket_content'] = [basket.product.id for basket in self.request.user.basket_set.prefetch_related('product')]
-        context['categories'] = ProductCategory.objects.all()
+            baskets = self.request.user.basket_set.select_related('product')
+            if baskets:
+                context['basket_content'] = [basket.product.id for basket in baskets]
+                baskets_total_sum = baskets[0].get_total_sum
+                context['basket_total_sum'] = 0.0
+                if baskets_total_sum:
+                    context['basket_total_sum'] = baskets_total_sum
+
+        context['categories'] = get_categories()
         context['title'] = 'GeekShop - Каталог'
         return context

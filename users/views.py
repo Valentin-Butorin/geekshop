@@ -6,6 +6,7 @@ from django.utils.decorators import method_decorator
 from django.views.generic import RedirectView, FormView, TemplateView
 from django.views.generic.edit import UpdateView
 
+from baskets.models import Basket
 from users.forms import UserLoginForm, UserRegistrationForm, UserProfileForm, UserAdditionalProfileForm
 from users.models import User
 
@@ -75,11 +76,10 @@ class ProfileFormView(UpdateView):
         context = super(ProfileFormView, self).get_context_data(**kwargs)
         context['title'] = 'GeekShop - Профиль'
         context['additional_profile_form'] = UserAdditionalProfileForm(instance=self.request.user.userprofile)
-        baskets = self.request.user.basket_set.prefetch_related('product')
+        baskets = self.request.user.basket_set.all().select_related('product').order_by('product__name')
         context['baskets'] = baskets
         context['total_quantity'] = sum(basket.quantity for basket in baskets)
         context['total_sum'] = sum(basket.quantity * basket.product.price for basket in baskets)
-
         return context
 
     @method_decorator(login_required())
